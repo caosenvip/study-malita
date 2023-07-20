@@ -1,0 +1,34 @@
+{
+  "name": "malita",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "hello": "node src/index.js",
+    "build": "pnpm esbuild src/** --bundle --outdir=lib --platform=node --external:esbuild",
+    "dev": "pnpm build --watch"
+  },
+  "bin": {
+    "malita": "bin/malita.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caosenvip/study-malita.git"
+  },
+  "keywords": [],
+  "author": "cs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caosenvip/study-malita/issues"
+  },
+  "homepage": "https://github.com/caosenvip/study-malita#readme",
+  "dependencies": {
+    "babel-standalone": "^6.26.0",
+    "commander": "^11.0.0",
+    "express": "4.17.3",
+    "portfinder": "^1.0.32",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
