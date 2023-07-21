@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "hello": "node src/index.js",
     "build": "pnpm esbuild src/** --bundle --outdir=lib --platform=node --external:esbuild",
+    "build:client": "pnpm esbuild ./client/** --outdir=lib/client --bundle --external:esbuild",
     "dev": "pnpm build --watch"
   },
   "bin": {
@@ -29,6 +30,7 @@
     "express": "4.17.3",
     "portfinder": "^1.0.32",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "ws": "^8.13.0"
   }
 }

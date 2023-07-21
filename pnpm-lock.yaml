@@ -36,6 +36,7 @@ importers:
       portfinder: ^1.0.32
       react: ^18.2.0
       react-dom: ^18.2.0
+      ws: ^8.13.0
     dependencies:
       babel-standalone: 6.26.0
       commander: 11.0.0
@@ -43,6 +44,7 @@ importers:
       portfinder: 1.0.32
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      ws: 8.13.0
 
 packages:
 
@@ -1203,3 +1205,16 @@ packages:
       string-width: 5.1.2
       strip-ansi: 7.1.0
     dev: true
+
+  /ws/8.13.0:
+    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
