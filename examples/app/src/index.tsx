@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom/client";
-import { HashRouter, Routes, Route, Outlet, useLocation, Link } from "react-router-dom";
+import { HashRouter, Routes, Route, useLocation, Link } from "react-router-dom";
 import { Page, Content, Header } from "@alita/flow";
+import KeepAliveLayout, { useKeepOutlets, KeepAliveContext } from '@casen001/keepalive';
+// import KeepAliveLayout, { useKeepOutlets, KeepAliveContext } from '@malitajs/keepalive';
 
 const Layout = () => {
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
+  const element = useKeepOutlets();
   return (
     <Page>
       <Header>当前路由: {pathname}</Header>
-      234
       <Content>
-        <Outlet />
+          {element}
       </Content>
     </Page>
   )
@@ -18,20 +20,29 @@ const Layout = () => {
 
 const Hello = () => {
   const [text, setText] = React.useState('Hello Malita!!!!')
+  const [count, setCount] = useState(0);
   return (
     <>
       <p onClick={() => {
         setText('Hi!!!')
       }}>{text}</p>
+      <p>{count}</p>
+      <p><button onClick={() => setCount(count => count + 1)}> Click Me! Add!</button></p>
       <Link to="/users">Users</Link>
     </>
   );
 }
 
 const Users = () => {
+  const [count, setCount] = useState(0);
+  const { pathname } = useLocation();
+  const { dropByCacheKey } = useContext<any>(KeepAliveContext);
   return (
     <>
       <p>Users</p>
+      <p>{count}</p>
+      <p><button onClick={() => setCount(count => count + 1)}> Click Me! Add!</button></p>
+      <p><button onClick={() => dropByCacheKey(pathname)}> Click Me! Clear Cache!</button></p>
       <Link to="/me">Me</Link>
     </>
   )
@@ -40,7 +51,7 @@ const Users = () => {
 const Me = () => {
   return (
     <>
-      <p>Users</p>
+      <p>Me</p>
       <Link to="/">go Home</Link>
     </>
   )
@@ -48,15 +59,17 @@ const Me = () => {
 
 const App = () => {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<Hello />}></Route>
-          <Route path="/users" element={<Users/>}></Route>
-          <Route path="/me" element={<Me/>}></Route>
-        </Route>
-      </Routes>
-    </HashRouter>
+    <KeepAliveLayout keepalive={[/./]}>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Hello />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/me" element={<Me />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </KeepAliveLayout>
   )
 }
 

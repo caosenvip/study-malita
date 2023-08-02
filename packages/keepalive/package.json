@@ -1,0 +1,41 @@
+{
+  "name": "@casen001/keepalive",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "types": "lib.index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "pnpm build -- --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "keepalive": "lib/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caosenvip/study-malita.git"
+  },
+  "keywords": [],
+  "author": "cs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caosenvip/study-malita/issues"
+  },
+  "homepage": "https://github.com/caosenvip/study-malita#readme",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.14.2",
+    "react-router-dom": "^6.14.2"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "description": "",
+  "devDependencies": {
+    "@types/react": "^18.2.18"
+  }
+}
