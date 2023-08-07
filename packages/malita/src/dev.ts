@@ -27,6 +27,7 @@ export const dev = async () => {
     <head>
         <meta charset="UTF-8">
         <title>Malita</title>
+        <link href="/${DEFAULT_OUTDIR}/index.css" rel="stylesheet"></link>
     </head>
     
     <body>
