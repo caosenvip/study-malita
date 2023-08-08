@@ -6,6 +6,8 @@ import portfinder from 'portfinder';
 import { createServer } from "http";
 import { DEFAULT_ENTRY_POINT, DEFAULT_OUTDIR, DEFAULT_PLATFORM, DEFAULT_PORT, DEFAULT_HOST, DEFAULT_BUILD_PORT } from './constants';
 import { createWebSocketServer } from "./server";
+import { getAppData } from './appData';
+import { getRoutes } from './routes';
 
 export const dev = async () => {
   const cwd = process.cwd();
@@ -56,6 +58,16 @@ export const dev = async () => {
     console.log(`App listening at http://${DEFAULT_HOST}:${port}`)
 
     try {
+      // 生命周期
+      // 获取项目元信息  
+      const appData = await getAppData({
+        cwd
+      });
+      console.log('appData', appData)
+      // 获取 routes 配置
+      const routes = await getRoutes({ appData });
+      console.log('routes', routes)
+
       await build({
         format: 'iife',
         logLevel: 'error',
