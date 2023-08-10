@@ -1,13 +1,17 @@
 import express from 'express'
 import { build } from 'esbuild';
 import type { ServeOnRequestArgs } from 'esbuild';
+import fs from "fs";
 import path from "path";
 import portfinder from 'portfinder';
 import { createServer } from "http";
-import { DEFAULT_ENTRY_POINT, DEFAULT_OUTDIR, DEFAULT_PLATFORM, DEFAULT_PORT, DEFAULT_HOST, DEFAULT_BUILD_PORT } from './constants';
+import { DEFAULT_OUTDIR, DEFAULT_PLATFORM, DEFAULT_PORT, DEFAULT_HOST } from './constants';
 import { createWebSocketServer } from "./server";
 import { getAppData } from './appData';
 import { getRoutes } from './routes';
+import { generateEntry } from './entry';
+import { generateHtml } from './html';
+import { style } from './styles';
 
 export const dev = async () => {
   const cwd = process.cwd();
@@ -19,31 +23,20 @@ export const dev = async () => {
     port: DEFAULT_PORT,
   });
 
-  const esbuildOutput = path.resolve(cwd, DEFAULT_OUTDIR);
+  const output = path.resolve(cwd, DEFAULT_OUTDIR);
 
-  app.get('/', (_req, res) => {
+  app.get('/', (_req, res, next) => {
     res.set('Content-Type', 'text/html');
-    res.send(`<!DOCTYPE html>
-    <html lang="en">
-    
-    <head>
-        <meta charset="UTF-8">
-        <title>Malita</title>
-        <link href="/${DEFAULT_OUTDIR}/index.css" rel="stylesheet"></link>
-    </head>
-    
-    <body>
-        <div id="malita">
-            <span>loading...</span>
-        </div>
-        <script src="/${DEFAULT_OUTDIR}/index.js"></script>
-        <script src="/malita/client.js"></script>
-    </body>
-    </html>`);
+    const htmlPath = path.join(output, 'index.html');
+    if (fs.existsSync(htmlPath)) {
+        fs.createReadStream(htmlPath).on('error', next).pipe(res);
+    } else {
+        next();
+    }
   })
 
   // 访问DEFAULT_OUTDIR时,重定向到esbuildOutput
-  app.use(`/${DEFAULT_OUTDIR}`, express.static(esbuildOutput));
+  app.use(`/${DEFAULT_OUTDIR}`, express.static(output));
   // 注入 Socket 客户端脚本
   //__dirname 文件所在路径 cwd 命令执行路径
   app.use(`/malita`, express.static(path.resolve(__dirname, 'client')));
@@ -67,11 +60,15 @@ export const dev = async () => {
       // 获取 routes 配置
       const routes = await getRoutes({ appData });
       console.log('routes', routes)
+      // 生成项目主入口
+      await generateEntry({ appData, routes });
+      // 生成 Html
+      await generateHtml({ appData });
 
       await build({
         format: 'iife',
         logLevel: 'error',
-        outdir: esbuildOutput,
+        outdir: appData.paths.absOutputPath,
         platform: DEFAULT_PLATFORM,
         bundle: true,
         watch: {
@@ -89,7 +86,8 @@ export const dev = async () => {
             'process.env.NODE_ENV': JSON.stringify('development'),
         },
         external: ['esbuild'],
-        entryPoints: [path.resolve(cwd, DEFAULT_ENTRY_POINT)],
+        plugins: [style()],
+        entryPoints: [appData.paths.absEntryPath],
       });
       // [Issues](https://github.com/evanw/esbuild/issues/805)
       // 查了很多资料，esbuild serve 不能响应 onRebuild， esbuild build 和 express 组合不能不写入文件

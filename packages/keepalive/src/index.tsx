@@ -24,11 +24,9 @@ export function useKeepOutlets() {
     const location = useLocation();
     const element = useOutlet();
     const { keepElements, keepalive } = useContext<any>(KeepAliveContext);
-    console.log('keepalive---', keepalive)
     const isKeep = isKeepPath(keepalive, location.pathname);
     if (isKeep) {
         keepElements.current[location.pathname] = element;
-        console.log('isKeep === ', keepElements)
     }
     return <>
         {
@@ -51,8 +49,8 @@ interface KeepAliveLayoutProps {
 }
 
 const KeepAliveLayout: FC<KeepAliveLayoutProps> = (props) => {
-    const keepElements = useRef<any>({})
     const { keepalive, ...other } = props;
+    const keepElements = React.useRef<any>({})
     function dropByCacheKey(path: string) {
         keepElements.current[path] = null;
     }
